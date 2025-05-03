@@ -1,6 +1,6 @@
 export interface FormType {
     modelType: string;
-    datasetSize: number;
+    datasetSize: string;
     mode: string;
     budget: number;
     preferredRegion: string;

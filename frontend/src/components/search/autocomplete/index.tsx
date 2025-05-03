@@ -42,7 +42,7 @@ const AutocompleteSelect: React.FC<Props> = ({ placeholder, fetchSuggestions, on
 
   return (
     <div className="relative w-full">
-      <div className="flex items-center bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-2 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 transition">
+      <div className="flex items-center bg-zinc-800 border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-2 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 transition">
         <Search className="w-4 h-4 text-gray-400 mr-2" />
         <input
           type="text"
@@ -52,7 +52,7 @@ const AutocompleteSelect: React.FC<Props> = ({ placeholder, fetchSuggestions, on
             setQuery(e.target.value)
             setShowDropdown(true)
           }}
-          className="bg-transparent w-full text-sm focus:outline-none text-gray-800 dark:text-white"
+          className="bg-transparent w-full text-sm focus:outline-none text-white"
         />
       </div>
 
@@ -62,13 +62,13 @@ const AutocompleteSelect: React.FC<Props> = ({ placeholder, fetchSuggestions, on
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="absolute z-10 mt-1 w-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg max-h-60 overflow-y-auto"
+            className="absolute z-10 mt-1 w-full bg-zinc-800 border border-gray-700 rounded-xl shadow-lg max-h-60 overflow-y-auto"
           >
             {suggestions.map(item => (
               <li
                 key={item.id}
                 onClick={() => handleSelect(item)}
-                className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-700 cursor-pointer text-sm text-gray-900 dark:text-white"
+                className="px-4 py-2 hover:bg-zinc-700 cursor-pointer text-sm text-white"
               >
                 {item.label}
               </li>
