@@ -49,7 +49,7 @@ git clone https://github.com/WhiteSnek/SD_009.git
 ```bash
 cd backend
 npm install
-node index.js
+npm run dev
 ```
 Backend runs at: [http://localhost:8000](http://localhost:8000)
 
@@ -57,7 +57,7 @@ Backend runs at: [http://localhost:8000](http://localhost:8000)
 ```bash
 cd ../frontend
 npm install
-npm start
+npm run dev
 ```
 Frontend runs at: [http://localhost:5173](http://localhost:5173)
 
@@ -71,51 +71,10 @@ docker-compose up --build
 ```
 
 #### 2. Access App
-- Frontend: [http://localhost:5173](http://localhost:5173)
+- Frontend: [http://localhost:80](http://localhost:80)
 - Backend API: [http://localhost:8000](http://localhost:8000)
 
 ---
-
-## 🐳 Docker Configuration
-
-### 📁 `docker-compose.yml`
-```yaml
-version: '3.8'
-services:
-  backend:
-    build: ./backend
-    ports:
-      - "8000:8000"
-    restart: always
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "5173:5173"
-    restart: always
-```
-
-### 📁 `backend/Dockerfile`
-```dockerfile
-FROM node:18
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-EXPOSE 8000
-CMD ["node", "index.js"]
-```
-
-### 📁 `frontend/Dockerfile`
-```dockerfile
-FROM node:18
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-EXPOSE 5173
-CMD ["npm", "start"]
-```
 
 ---
 
@@ -124,7 +83,7 @@ CMD ["npm", "start"]
 ### 🔹 Endpoint
 
 ```
-POST /api/workload
+POST /workload
 ```
 
 ### 🔹 Request Body
@@ -192,31 +151,6 @@ It then chooses the best match and returns a recommendation with explanation.
 
 ---
 
-## 🧪 Sample Input/Output
-
-### Input
-```json
-{
-  "modelType": "LLM",
-  "datasetSize": 1000,
-  "budgetUSD": 3000,
-  "usageType": "training",
-  "preferredLocation": "cloud"
-}
-```
-
-### Output
-```json
-{
-  "recommendedGPU": "NVIDIA H100",
-  "hourlyCostUSD": 4.1,
-  "monthlyCostUSD": 2952,
-  "reason": "The H100 is optimal for training large language models with tensor core acceleration, 80GB HBM2e memory, and excellent FP8/FP16 support."
-}
-```
-
----
-
 ## 🧯 Security Notes
 
 - Basic input validation on backend
@@ -227,8 +161,6 @@ It then chooses the best match and returns a recommendation with explanation.
 ---
 
 ## 🔮 Future Enhancements
-
-- 🔄 Real-time GPU pricing from AWS, GCP, and Azure
 - 📈 Charts to compare GPU options
 - 🗺️ Region-aware recommendations
 - 🎛️ User filters for VRAM, CUDA Cores, Power
