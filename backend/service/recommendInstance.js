@@ -142,10 +142,6 @@ function parseVRAM(description) {
 
 // Estimate processing time for the dataset on the GPU
 function estimateProcessingTime(datasetSize, complexityFactor, vram, vcpus) {
-    console.log("Dataset Size:", datasetSize);
-    console.log("Complexity Factor:", complexityFactor);
-    console.log("VRAM:", vram);
-    console.log("vCPUs:", vcpus);
     return (datasetSize * complexityFactor) / (vram * vcpus);
 }
   
