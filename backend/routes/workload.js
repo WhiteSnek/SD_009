@@ -26,7 +26,7 @@ workloadRouter.post("/", async (req, res) => {
                 message: 'No GPUs found within the budget.',
                 length: recommendations.length,
                 filterGpus: filterGpus.length,
-                recommendations: recommendations[0] || [],
+                recommendations: [recommendations[0]],
                 unfiltered: gpuOptions
             });
         }
