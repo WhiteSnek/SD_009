@@ -1,7 +1,10 @@
 import express from 'express';
 import { PORT, NODE_ENV } from './config/env.js';
 import workloadRouter from './routes/workload.js';
+import cors from 'cors';
+
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.use('/workload', workloadRouter);
