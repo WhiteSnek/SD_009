@@ -15,6 +15,17 @@ workloadRouter.post("/", async (req, res) => {
         const gpuOptions = await fetchGpuPricing(input.prefferdRegion);
         const recommendations = recommendInstance(input.modelType, input.datasetSize, input.mode, gpuOptions);
 
+        if(input.budget === 0) {
+            return res.status(200).json({ 
+                success: true,
+                message: 'No budget provided.',
+                length: gpuOptions.length,
+                filterGpus: 0,
+                recommendations: recommendations[0] || [],
+                unfiltered: gpuOptions
+            });
+        }
+        
         const filterGpus = recommendations.filter((option) => {
             return option.totalCost <= input.budget
         })
