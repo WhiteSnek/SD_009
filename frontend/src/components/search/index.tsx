@@ -135,7 +135,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ setSearched, resultsRef }) => {
         transition={{ duration: 0.5 }}
       >
         <Settings className="w-6 h-6 text-blue-400" />
-        <h2 className="text-3xl font-bold text-white">GPU Finder</h2>
+        <h2 className="text-3xl font-bold text-white">Find your GPU</h2>
       </motion.div>
 
       <motion.form
