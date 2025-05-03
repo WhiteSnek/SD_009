@@ -5,31 +5,50 @@ import { Input } from "../ui/input";
 import { useApiContext } from "@/context/ApiContext";
 import { Settings, Globe, Database, CreditCard, Zap } from "lucide-react";
 import { FormType } from "@/types/form.types";
+import { modelOptions, regionOptions } from "@/constants";
+import { toast } from "sonner";
 
-const SearchForm = () => {
+interface SearchFormProps {
+  setSearched: React.Dispatch<React.SetStateAction<boolean>>;
+  resultsRef: React.RefObject<HTMLDivElement | null>;
+}
+
+const SearchForm: React.FC<SearchFormProps> = ({ setSearched, resultsRef }) => {
   const [formData, setFormData] = useState<FormType>({
     modelType: "",
     datasetSize: "small",
-    mode: "",
+    mode: "training",
     budget: 0,
     preferredRegion: "ap-south-mum-1",
   });
 
   const { fetchGpus } = useApiContext();
-
-  const modelOptions = [
-    { id: "gpt3", label: "GPT-3" },
-    { id: "gpt4", label: "GPT-4" },
-    { id: "claude", label: "Claude" },
-    { id: "llama", label: "Llama" },
+  const allowedModelTypes = [
+    "gpt3",
+    "stable-diffusion",
+    "yolov8",
+    "bert",
+    "dalle-2",
+    "resnet",
+    "vgg16",
+    "efficientnet",
+    "deeplabv3",
+    "t5",
+    "clip",
+    "deepspeech",
+    "wavenet",
+    "tacotron-2",
+    "alphafold",
+    "transformer",
+    "openaicodex",
+    "alphago",
+    "gpt-neo",
   ];
-
-  const regionOptions = [
-    { id: "ap-south-mum-1", label: "Mumbai" },
-    { id: "us-east-1", label: "Virginia" },
-    { id: "eu-west-1", label: "Ireland" },
-    { id: "ap-southeast-1", label: "Singapore" },
-    { id: "ap-northeast-1", label: "Tokyo" },
+  const allowedRegions = [
+    "us-east-at-1",
+    "ap-south-mum-1",
+    "ap-south-del-1",
+    "ap-south-noi-1",
   ];
 
   const fetchModelSuggestions = async (query: string) => {
@@ -47,20 +66,42 @@ const SearchForm = () => {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
+    e.preventDefault();
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]:
-            name === "budget" ? Number(value) : value,
+      [name]: name === "budget" ? Number(value) : value,
     });
   };
 
-  const handleSubmit = async (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    if (!allowedModelTypes.includes(formData.modelType)) {
+      toast.error("Invalid model type", {
+        description: "Please select a valid model from the suggestions.",
+      });
+      return;
+    }
+
+    if (!allowedRegions.includes(formData.preferredRegion)) {
+      toast.error("Invalid region", {
+        description: "Please select a valid region from the suggestions.",
+      });
+      return;
+    }
+
+    if (formData.budget <= 0) {
+      toast.error("Invalid budget", {
+        description: "Budget range should be greater than zero.",
+      });
+      return;
+    }
     await fetchGpus(formData);
+    setSearched(true);
+
+    setTimeout(() => {
+      resultsRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   };
 
   const containerVariants = {
@@ -98,7 +139,7 @@ const SearchForm = () => {
       </motion.div>
 
       <motion.form
-        onSubmit={() => handleSubmit}
+        onSubmit={(e) => handleSubmit(e)}
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -109,7 +150,7 @@ const SearchForm = () => {
             <Zap className="w-5 h-5 text-blue-400" />
           </div>
           <label className="block text-sm font-medium text-blue-300 mb-2">
-            Model Type
+            Model Type*
           </label>
           <AutocompleteSelect
             placeholder="Select Model Type"
@@ -138,6 +179,7 @@ const SearchForm = () => {
               <option value="small">Small (1-10 GB)</option>
               <option value="medium">Medium (10-50 GB)</option>
               <option value="large">Large (50-200 GB)</option>
+              <option value="huge">Huge (200+ GB)</option>
             </select>
           </motion.div>
 
@@ -146,7 +188,7 @@ const SearchForm = () => {
               <CreditCard className="w-5 h-5 text-blue-400" />
             </div>
             <label className="block text-sm font-medium text-blue-300 mb-2">
-              Budget (USD)
+              Budget (USD)*
             </label>
             <Input
               type="number"
@@ -154,7 +196,7 @@ const SearchForm = () => {
               value={formData.budget}
               onChange={handleInputChange}
               min="0"
-              step="100"
+              step="1"
               className="pl-10 bg-zinc-800 border-zinc-600 text-zinc-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg"
               required
             />

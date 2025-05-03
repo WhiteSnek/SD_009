@@ -21,6 +21,7 @@ type ApiResult = {
   resource_name: string;
   resource_type: string;
   vcpus: number;
+  explanation: string;
 };
 
 
@@ -28,6 +29,7 @@ interface ApiContextType {
   data: ApiResult[];
   setData: React.Dispatch<React.SetStateAction<ApiResult[]>>;
   fetchGpus: (formData: FormType) => Promise<void>;
+  inBudget: boolean;
 }
 
 const ApiContext = createContext<ApiContextType | undefined>(undefined);
@@ -44,18 +46,20 @@ export const ApiContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
   const [data,setData] = useState<ApiResult[]>([]);
-
+  const [inBudget, setInBudget] = useState<boolean>(false);
   const fetchGpus = async (formData: FormType) : Promise<void> => {
     try {
       const response = await axios.post("http://localhost:8000/workload", formData);
+      console.log("Response from API:", response.data);
       if(response.data.recommendations){
         setData(response.data.recommendations);
       }
+      setInBudget(response.data.filterGpus !== 0);
     } catch (error) {
       console.error("Error fetching GPUs:", error);
     }
     
   }
 
-  return <ApiContext.Provider value={{data, setData, fetchGpus}}>{children}</ApiContext.Provider>;
+  return <ApiContext.Provider value={{data, setData, fetchGpus, inBudget}}>{children}</ApiContext.Provider>;
 };
