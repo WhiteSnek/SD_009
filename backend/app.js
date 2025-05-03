@@ -2,10 +2,12 @@ import express from 'express';
 import { PORT, NODE_ENV } from './config/env.js';
 import workloadRouter from './routes/workload.js';
 import cors from 'cors';
+import arcjetMiddleware from './middleware/arcjetMiddleware.js';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(arcjetMiddleware);
 
 app.use('/workload', workloadRouter);
 
